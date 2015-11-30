@@ -1,0 +1,232 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "lambda-api-demo",
+    "version": "1.0.0"
+  },
+  "host": "execute-api.us-east-1.amazonaws.com",
+  "basePath": "/",
+  "schemes": ["https"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/asg": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "ASG list retrieved",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ASG"
+              }
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "aws",
+          "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:XXXXXXXXXXXXX:function:GetASG/invocations",
+          "credentials": "arn:aws:iam::XXXXXXXXXXXXX:role/APIGatewayLambdaInvokeRole",
+          "httpMethod": "POST",
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            } 
+          }
+        }
+      },
+      "options": {
+        "description": "Enable CORS by returning correct headers",
+        "tags": [ "CORS" ],
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "httpMethod": "OPTIONS",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\" : 200}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS, GET'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default response for CORS method",
+            "headers": {
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/asg/{asgName}": {
+      "parameters": [{
+        "name": "asgName",
+        "in": "path",
+        "description": "Name of the auto-scaling group",
+        "required": true,
+        "default": "",
+        "type": "string"
+      }],
+      "put": {
+        "responses": {
+          "201": {
+            "description": "ASG Scaled successfully",
+            "schema": {
+              "$ref": "#/definitions/ASG"
+            },
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              }
+            }
+          },
+          "404": {
+            "description": "ASG Doesn't exist",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "parameters": [{
+          "name": "asgName",
+          "in": "path",
+          "description": "ASG Name",
+          "required": true,
+          "type": "string"
+        },{
+          "name": "body",
+          "in": "body",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/modifyASG"
+          }
+        }],
+        "x-amazon-apigateway-integration": {
+          "type": "aws",
+          "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:XXXXXXXXXXXXX:function:ScaleASG/invocations",
+          "httpMethod": "POST",
+          "credentials": "arn:aws:iam::XXXXXXXXXXXXX:role/APIGatewayLambdaInvokeRole",
+          "requestTemplates": {
+            "application/json": "{\"body\": $input.json('$'), \"asgName\": \"$input.params('asgName')\"}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "201",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            },
+            "NotFound.*": {
+              "statusCode": "404",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          }
+        }
+      },
+      "options": {
+        "description": "Enable CORS by returning correct headers",
+        "tags": [ "CORS" ],
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "httpMethod": "OPTIONS",
+          "requestTemplates": {
+            "application/json": "{\"statusCode\" : 200}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS, PUT'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              },
+              "responseTemplates": {
+                "application/json": "{}"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Default response for CORS method",
+            "headers": {
+              "Access-Control-Allow-Headers": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Methods": {
+                "type": "string"
+              },
+              "Access-Control-Allow-Origin": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ASG": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "asgName": {
+          "type": "string"
+        },
+        "minInstances": {
+          "type": "integer"
+        },
+        "maxInstances": {
+          "type": "integer"
+        },
+        "runningInstances": {
+          "type": "integer"
+        }
+      },
+      "required": ["asgName", "minInstances", "maxInstances", "runningInstances"]
+    },
+    "modifyASG": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "minInstances": {
+          "type": "integer"
+        },
+        "maxInstances": {
+          "type": "integer"
+        }
+      },
+      "required": ["minInstances", "maxInstances"]
+    }
+  }
+}
