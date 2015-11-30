@@ -1,0 +1,3 @@
+[submodule "aws-apigateway-importer"]
+	path = aws-apigateway-importer
+	url = https://github.com/awslabs/aws-apigateway-importer
