@@ -30,8 +30,8 @@
         },
         "x-amazon-apigateway-integration": {
           "type": "aws",
-          "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:XXXXXXXXXXXXX:function:GetASG/invocations",
-          "credentials": "arn:aws:iam::XXXXXXXXXXXXX:role/APIGatewayLambdaInvokeRole",
+          "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:XXXXXXXXXXXX:function:GetASG/invocations",
+          "credentials": "arn:aws:iam::XXXXXXXXXXXX:role/APIGatewayLambdaInvokeRole",
           "httpMethod": "POST",
           "responses": {
             "default": {
@@ -131,9 +131,9 @@
         }],
         "x-amazon-apigateway-integration": {
           "type": "aws",
-          "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:XXXXXXXXXXXXX:function:ScaleASG/invocations",
+          "uri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:XXXXXXXXXXXX:function:ScaleASG/invocations",
           "httpMethod": "POST",
-          "credentials": "arn:aws:iam::XXXXXXXXXXXXX:role/APIGatewayLambdaInvokeRole",
+          "credentials": "arn:aws:iam::XXXXXXXXXXXX:role/APIGatewayLambdaInvokeRole",
           "requestTemplates": {
             "application/json": "{\"body\": $input.json('$'), \"asgName\": \"$input.params('asgName')\"}"
           },

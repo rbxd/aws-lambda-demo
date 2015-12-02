@@ -17,6 +17,11 @@ Register Lambda function with AWS:
      --handler index.handler \
      --zip-file fileb://asg-scale.zip
 
+Or update, in case it already exists:
+ $ aws lambda update-function-code \
+     --function-name ASGScale \
+     --zip-file fileb://asg-scale.zip
+
 Modify Swagger definition to reflect the actual Lambda and IAM ARNs.
 
 Create API Gateway from the Swagger definition:
